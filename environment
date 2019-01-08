@@ -1,0 +1,100 @@
+{
+	"id": "8b610088-aaff-45d1-82ae-36e9a1dcedf7",
+	"name": "AUTH Kolesa-Team",
+	"values": [
+		{
+			"key": "host",
+			"value": "id.kolesa-team.org",
+			"description": {
+				"content": "",
+				"type": "text/plain"
+			},
+			"enabled": true
+		},
+		{
+			"key": "email",
+			"value": "",
+			"description": {
+				"content": "",
+				"type": "text/plain"
+			},
+			"enabled": true
+		},
+		{
+			"key": "password",
+			"value": "",
+			"description": {
+				"content": "",
+				"type": "text/plain"
+			},
+			"enabled": true
+		},
+		{
+			"key": "invalidPassword",
+			"value": "",
+			"description": {
+				"content": "",
+				"type": "text/plain"
+			},
+			"enabled": true
+		},
+		{
+			"key": "token",
+			"value": null,
+			"description": {
+				"content": "",
+				"type": "text/plain"
+			},
+			"enabled": true
+		},
+		{
+			"key": "smsCode",
+			"value": "",
+			"description": {
+				"content": "",
+				"type": "text/plain"
+			},
+			"enabled": true
+		},
+		{
+			"key": "invalidPhone",
+			"value": "",
+			"enabled": true
+		},
+		{
+			"key": "project",
+			"value": "",
+			"description": {
+				"content": "",
+				"type": "text/plain"
+			},
+			"enabled": true
+		},
+		{
+			"key": "phoneNumber",
+			"value": "",
+			"description": {
+				"content": "",
+				"type": "text/plain"
+			},
+			"enabled": true
+		},
+		{
+			"key": "invalidEmail",
+			"value": "",
+			"enabled": true
+		},
+		{
+			"key": "InvalidSmsCode",
+			"value": "",
+			"description": {
+				"content": "",
+				"type": "text/plain"
+			},
+			"enabled": true
+		}
+	],
+	"_postman_variable_scope": "environment",
+	"_postman_exported_at": "2018-11-20T04:53:17.794Z",
+	"_postman_exported_using": "Postman/6.5.2"
+}

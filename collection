@@ -1,0 +1,1564 @@
+{
+	"info": {
+		"_postman_id": "92cbb947-eb3a-472f-b4e2-2227bc89831b",
+		"name": "AUTH Kolesa-Team",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "SmokeTests",
+			"item": [
+				{
+					"name": "checkMainPage",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "cbcadc5e-7ced-49d8-8765-1eccf7ed3b90",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"var textContains = [\"Вход в личный кабинет\", \"E-mail или номер телефона\", \"Войти другим способом\"] ",
+									"",
+									"textContains.forEach(function(entry){",
+									"    pm.test((\"Body matches string \"+entry) , function () {",
+									"        pm.expect(pm.response.text()).to.include(entry);",
+									"    });",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://{{host}}/login/",
+							"protocol": "https",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"login",
+								""
+							]
+						},
+						"description": "Проверяю доступность страницы авторизации"
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "c37f89eb-3cc1-4f13-9bf7-ff1322498677",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "d3fb5e8d-12dc-484d-a2dc-cd19ae4082de",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Functional",
+			"item": [
+				{
+					"name": "Positive",
+					"item": [
+						{
+							"name": "LoginByPhone",
+							"item": [
+								{
+									"name": "checkLoginbyPhone",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "c5a75bfb-ce7b-47a4-8c64-30f99490dbbe",
+												"exec": [
+													"var ",
+													"    scheme = {",
+													"        \"type\":        \"object\",",
+													"        \"properties\": {",
+													"            \"type\": {",
+													"                \"type\":\"string\"",
+													"            },",
+													"            \"login_type\": {",
+													"                \"type\":\"string\"",
+													"            },",
+													"            \"nb_chars\": {",
+													"                \"type\":\"integer\"",
+													"            },",
+													"            \"retry_after\": {",
+													"                \"type\":\"integer\"",
+													"            },",
+													"            \"status\": {",
+													"                \"type\":\"string\"",
+													"            }    ",
+													"       }",
+													"    }",
+													"    ",
+													"    response = pm.response.json();",
+													"",
+													"pm.test('Schema is valid', function() {",
+													"    var isValidScheme = tv4.validate(response, scheme, true, true);",
+													"    ",
+													"    pm.expect(isValidScheme).to.be.true;",
+													"});",
+													"",
+													"pm.test(\"checkTypeResponse\", function () {",
+													"    var jsonData = pm.response.json();",
+													"    var login_type = jsonData.login_type;",
+													"    pm.expect(login_type).to.eql(\"phone\");",
+													"});",
+													"",
+													"pm.test(\"checkStatusResponse\", function () {",
+													"    var jsonData = pm.response.json();",
+													"    var status = jsonData.status;",
+													"    pm.expect(status).to.eql(\"ok\");",
+													"});",
+													"    "
+												],
+												"type": "text/javascript"
+											}
+										},
+										{
+											"listen": "prerequest",
+											"script": {
+												"id": "cd7f2d68-d22c-48e4-969d-6a0fd0217370",
+												"exec": [
+													"    var project = \"kolesa\";",
+													"",
+													"try {",
+													"    console.log(project);",
+													"    pm.environment.set(\"project\", project);",
+													"} catch(e) {",
+													"    // выводим исключение в консоль",
+													"    console.log(e);",
+													"}",
+													"",
+													"var number = \"7701\" + Math.floor(Math.random() * 10000000);",
+													"",
+													"try {",
+													"    console.log(number);",
+													"    pm.environment.set(\"phoneNumber\", number);",
+													"} catch(e) {",
+													"    // выводим исключение в консоль",
+													"    console.log(e);",
+													"}",
+													""
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "formdata",
+											"formdata": [
+												{
+													"key": "project",
+													"value": "{{project}}",
+													"type": "text"
+												},
+												{
+													"key": "login",
+													"value": "{{phoneNumber}}",
+													"type": "text"
+												},
+												{
+													"key": "restore",
+													"value": "true",
+													"type": "text"
+												}
+											]
+										},
+										"url": {
+											"raw": "https://{{host}}/getInfoAuth.json",
+											"protocol": "https",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"getInfoAuth.json"
+											]
+										},
+										"description": "Передаем номер телефона для последующей авторизации"
+									},
+									"response": []
+								},
+								{
+									"name": "checkLoginByPhoneCode",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"id": "5549b092-b13f-4e99-a3e7-d278b0d9072e",
+												"exec": [
+													"var smsCode = \"1111\";",
+													"",
+													"try {",
+													"    console.log(smsCode);",
+													"    pm.environment.set(\"smsCode\", smsCode);",
+													"} catch(e) {",
+													"    // выводим исключение в консоль",
+													"    console.log(e);",
+													"}",
+													""
+												],
+												"type": "text/javascript"
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"id": "43855dc1-c196-473f-89b9-84ba020ac063",
+												"exec": [
+													"var ",
+													"    scheme = {",
+													"        \"type\":        \"object\",",
+													"        \"properties\": {",
+													"            \"status\": {",
+													"                \"type\":\"string\"",
+													"            },    ",
+													"            \"userId\": {",
+													"                \"type\":'integer'",
+													"            },",
+													"            \"token\": {",
+													"                \"type\":'string'",
+													"            }",
+													"       }",
+													"    }",
+													"    ",
+													"    response = pm.response.json();",
+													"",
+													"pm.test('Schema is valid', function() {",
+													"    var isValidScheme = tv4.validate(response, scheme, true, true);",
+													"    ",
+													"    pm.expect(isValidScheme).to.be.true;",
+													"});",
+													"",
+													"pm.test(\"checkStatusResponse\", function () {",
+													"    var jsonData = pm.response.json();",
+													"    var status = jsonData.status;",
+													"    pm.expect(status).to.eql(\"ok\");",
+													"});",
+													"",
+													"try {",
+													"    var jsonData = pm.response.json();",
+													"    var token = jsonData.token;",
+													"    pm.environment.set(\"token\", token);",
+													"    console.log(token);",
+													"} catch(e) {",
+													"    //выводим исключение в консоль",
+													"    console.log(e);",
+													"} ",
+													""
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "formdata",
+											"formdata": [
+												{
+													"key": "project",
+													"value": "{{project}}",
+													"type": "text"
+												},
+												{
+													"key": "code",
+													"value": "{{smsCode}}",
+													"type": "text"
+												},
+												{
+													"key": "login",
+													"value": "{{phoneNumber}}",
+													"type": "text"
+												}
+											]
+										},
+										"url": {
+											"raw": "https://{{host}}/login.json",
+											"protocol": "https",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"login.json"
+											]
+										},
+										"description": "Передаем смс-код и авторизуемся под номером телефона"
+									},
+									"response": []
+								},
+								{
+									"name": "checkPhoneSavePassword",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "15d311fe-7a00-47e1-a387-a42217456bc6",
+												"exec": [
+													"var ",
+													"    scheme = {",
+													"        \"type\":        \"object\",",
+													"        \"properties\": {",
+													"            \"status\": {",
+													"                \"type\":\"string\"",
+													"            },    ",
+													"       }",
+													"    }",
+													"    ",
+													"    response = pm.response.json();",
+													"",
+													"pm.test('Schema is valid', function() {",
+													"    var isValidScheme = tv4.validate(response, scheme, true, true);",
+													"    ",
+													"    pm.expect(isValidScheme).to.be.true;",
+													"});",
+													"",
+													"pm.test(\"checkStatusResponse\", function () {",
+													"    var jsonData = pm.response.json();",
+													"    var status = jsonData.status;",
+													"    pm.expect(status).to.eql(\"ok\");",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										},
+										{
+											"listen": "prerequest",
+											"script": {
+												"id": "79e44715-36e3-4b5f-a3ef-e705ba5e0810",
+												"exec": [
+													"function randomString(length, chars) {",
+													"    var result = '';",
+													"    for (var i = length; i > 0; --i) result += chars[Math.floor(Math.random() * chars.length)];",
+													"    return result;",
+													"}",
+													"var password = randomString(6, '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ');",
+													"",
+													"",
+													"try {",
+													"    console.log(password);",
+													"    pm.environment.set(\"password\", password);",
+													"} catch(e) {",
+													"    // выводим исключение в консоль",
+													"    console.log(e);",
+													"}",
+													""
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "formdata",
+											"formdata": [
+												{
+													"key": "project",
+													"value": "{{project}}",
+													"type": "text"
+												},
+												{
+													"key": "password",
+													"value": "{{password}}",
+													"type": "text"
+												},
+												{
+													"key": "passwordAgain",
+													"value": "{{password}}",
+													"type": "text"
+												},
+												{
+													"key": "token",
+													"value": "{{token}}",
+													"type": "text"
+												}
+											]
+										},
+										"url": {
+											"raw": "https://{{host}}/setPassword.json",
+											"protocol": "https",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"setPassword.json"
+											]
+										},
+										"description": "Устанавливаем новый пароль"
+									},
+									"response": []
+								}
+							],
+							"_postman_isSubFolder": true
+						},
+						{
+							"name": "LoginByMail",
+							"item": [
+								{
+									"name": "checkLoginbyMail",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"id": "efe92967-1510-4385-af1a-6a96228cd93e",
+												"exec": [
+													"var project = \"kolesa\";",
+													"",
+													"try {",
+													"    console.log(project);",
+													"    pm.environment.set(\"project\", project);",
+													"} catch(e) {",
+													"    // выводим исключение в консоль",
+													"    console.log(e);",
+													"}",
+													"",
+													"",
+													"function randomString(length, chars) {",
+													"    var result = '';",
+													"    for (var i = length; i > 0; --i) result += chars[Math.floor(Math.random() * chars.length)];",
+													"    return result;",
+													"}",
+													"var email = randomString(10, '0123456789abcdefghijklmnopqrstuvwxyz') + \"@newmantest.org\";",
+													"",
+													"try {",
+													"    console.log(email);",
+													"    pm.environment.set(\"email\", email);",
+													"} catch(e) {",
+													"    // выводим исключение в консоль",
+													"    console.log(e);",
+													"}"
+												],
+												"type": "text/javascript"
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"id": "0267a5f7-5edf-4f06-b08c-b2b0801a04f4",
+												"exec": [
+													"var ",
+													"    scheme = {",
+													"        \"type\":       \"object\",",
+													"        \"properties\": {",
+													"            \"type\": {",
+													"                \"type\":\"string\"",
+													"            },",
+													"            \"login_type\": {",
+													"                \"type\":\"string\"",
+													"            },",
+													"            \"nb_chars\": {",
+													"                \"type\":\"integer\"",
+													"            },",
+													"            \"retry_after\": {",
+													"                \"type\":\"integer\"",
+													"            },",
+													"            \"status\": {",
+													"                \"type\":\"string\"",
+													"            }    ",
+													"       }",
+													"    }",
+													"    ",
+													"    response = pm.response.json();",
+													"",
+													"pm.test('Schema is valid', function() {",
+													"    var isValidScheme = tv4.validate(response, scheme, true, true);",
+													"    ",
+													"    pm.expect(isValidScheme).to.be.true;",
+													"});",
+													"",
+													"pm.test(\"checkTypeResponse\", function () {",
+													"    var jsonData = pm.response.json();",
+													"    var login_type = jsonData.login_type;",
+													"    pm.expect(login_type).to.eql(\"email\");",
+													"});",
+													"",
+													"pm.test(\"checkStatusResponse\", function () {",
+													"    var jsonData = pm.response.json();",
+													"    var status = jsonData.status;",
+													"    pm.expect(status).to.eql(\"ok\");",
+													"});",
+													""
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "formdata",
+											"formdata": [
+												{
+													"key": "project",
+													"value": "{{project}}",
+													"type": "text"
+												},
+												{
+													"key": "login",
+													"value": "{{email}}",
+													"type": "text"
+												},
+												{
+													"key": "restore",
+													"value": "true",
+													"type": "text"
+												}
+											]
+										},
+										"url": {
+											"raw": "https://{{host}}/getInfoAuth.json",
+											"protocol": "https",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"getInfoAuth.json"
+											]
+										},
+										"description": "Передаем мэйл для последующей авторизации"
+									},
+									"response": []
+								},
+								{
+									"name": "checkLoginByMailCode",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "486e7e20-6f0a-4816-b282-6d928adcff72",
+												"exec": [
+													"var ",
+													"    scheme = {",
+													"        \"type\":        \"object\",",
+													"        \"properties\": {",
+													"            \"status\": {",
+													"                \"type\":\"string\"",
+													"            },    ",
+													"            \"userId\": {",
+													"                \"type\":'integer'",
+													"            },",
+													"            \"token\": {",
+													"                \"type\":'string'",
+													"            }",
+													"       }",
+													"    }",
+													"    ",
+													"    response = pm.response.json();",
+													"",
+													"pm.test('Schema is valid', function() {",
+													"    var isValidScheme = tv4.validate(response, scheme, true, true);",
+													"    ",
+													"    pm.expect(isValidScheme).to.be.true;",
+													"});",
+													"",
+													"pm.test(\"checkStatusResponse\", function () {",
+													"    var jsonData = pm.response.json();",
+													"    var status = jsonData.status;",
+													"    pm.expect(status).to.eql(\"ok\");",
+													"});",
+													"",
+													"try {",
+													"    var jsonData = pm.response.json();",
+													"    var token = jsonData.token;",
+													"    pm.environment.set(\"token\", token);",
+													"    console.log(token);",
+													"} catch(e) {",
+													"    // выводим исключение в консоль",
+													"    console.log(e);",
+													"} ",
+													""
+												],
+												"type": "text/javascript"
+											}
+										},
+										{
+											"listen": "prerequest",
+											"script": {
+												"id": "96eb13e3-c110-40e4-9042-f4886271d8ab",
+												"exec": [
+													"var smsCode = \"1111\";",
+													"",
+													"try {",
+													"    console.log(smsCode);",
+													"    pm.environment.set(\"smsCode\", smsCode);",
+													"} catch(e) {",
+													"    // выводим исключение в консоль",
+													"    console.log(e);",
+													"}"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "formdata",
+											"formdata": [
+												{
+													"key": "project",
+													"value": "{{project}}",
+													"type": "text"
+												},
+												{
+													"key": "code",
+													"value": "{{smsCode}}",
+													"type": "text"
+												},
+												{
+													"key": "login",
+													"value": "{{email}}",
+													"type": "text"
+												}
+											]
+										},
+										"url": {
+											"raw": "https://{{host}}/login.json",
+											"protocol": "https",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"login.json"
+											]
+										},
+										"description": "Передаем смс-код и авторизуемся под мэйлом"
+									},
+									"response": []
+								},
+								{
+									"name": "checkMailSavePassword",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "738b6f8e-3377-43bf-b9ab-298e153cc753",
+												"exec": [
+													"var ",
+													"    scheme = {",
+													"        \"type\":        \"object\",",
+													"        \"properties\": {",
+													"            \"status\": {",
+													"                \"type\":\"string\"",
+													"            },    ",
+													"       }",
+													"    }",
+													"    ",
+													"    response = pm.response.json();",
+													"",
+													"pm.test('Schema is valid', function() {",
+													"    var isValidScheme = tv4.validate(response, scheme, true, true);",
+													"    ",
+													"    pm.expect(isValidScheme).to.be.true;",
+													"});",
+													"",
+													"pm.test(\"checkStatusResponse\", function () {",
+													"    var jsonData = pm.response.json();",
+													"    var status = jsonData.status;",
+													"    pm.expect(status).to.eql(\"ok\");",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										},
+										{
+											"listen": "prerequest",
+											"script": {
+												"id": "ed58d0d4-3045-4ef0-949a-ef22d8f4c358",
+												"exec": [
+													"function randomString(length, chars) {",
+													"    var result = '';",
+													"    for (var i = length; i > 0; --i) result += chars[Math.floor(Math.random() * chars.length)];",
+													"    return result;",
+													"}",
+													"var password = randomString(6, '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ');",
+													"",
+													"",
+													"try {",
+													"    console.log(password);",
+													"    pm.environment.set(\"password\", password);",
+													"} catch(e) {",
+													"    // выводим исключение в консоль",
+													"    console.log(e);",
+													"}"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "formdata",
+											"formdata": [
+												{
+													"key": "project",
+													"value": "{{project}}",
+													"type": "text"
+												},
+												{
+													"key": "password",
+													"value": "{{password}}",
+													"type": "text"
+												},
+												{
+													"key": "passwordAgain",
+													"value": "{{password}}",
+													"type": "text"
+												},
+												{
+													"key": "token",
+													"value": "{{token}}",
+													"type": "text"
+												}
+											]
+										},
+										"url": {
+											"raw": "https://{{host}}/setPassword.json",
+											"protocol": "https",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"setPassword.json"
+											]
+										},
+										"description": "Устанавливаем новый пароль"
+									},
+									"response": []
+								}
+							],
+							"_postman_isSubFolder": true
+						}
+					],
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Negative",
+					"item": [
+						{
+							"name": "checkInvalidPhoneNumber",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "f9a53b1b-70cf-4b95-8ab8-53cd76b86da7",
+										"exec": [
+											"function randomString(length, chars) {",
+											"    var result = '';",
+											"    for (var i = length; i > 0; --i) result += chars[Math.floor(Math.random() * chars.length)];",
+											"    return result;",
+											"}",
+											"var invalidPhone = randomString(7, '0123456789');",
+											"",
+											"try {",
+											"    console.log(invalidPhone);",
+											"    pm.environment.set(\"invalidPhone\", invalidPhone);",
+											"} catch(e) {",
+											"    // выводим исключение в консоль",
+											"    console.log(e);",
+											"}",
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"id": "7b504ab8-dc30-4f11-ad4d-9ef1533973b6",
+										"exec": [
+											"var ",
+											"    scheme ={",
+											"  \"definitions\": {},",
+											"  \"type\": \"object\",",
+											"  \"required\": [",
+											"    \"status\",",
+											"    \"code\",",
+											"    \"message\"",
+											"  ],",
+											"  \"properties\": {",
+											"    \"status\": {",
+											"      \"$id\": \"#/properties/status\",",
+											"      \"type\": \"string\",",
+											"      \"default\": \"error\",",
+											"    },",
+											"    \"code\": {",
+											"      \"$id\": \"#/properties/code\",",
+											"      \"type\": \"string\",",
+											"      \"default\": \"001\",",
+											"    },",
+											"    \"message\": {",
+											"      \"$id\": \"#/properties/message\",",
+											"      \"type\": \"string\",",
+											"      \"default\": \"Номер или e-mail введен в неверном формате\",",
+											"    }",
+											"  }",
+											"};",
+											"    ",
+											"    response = pm.response.json();",
+											"",
+											"pm.test('Schema is valid', function() {",
+											"    var isValidScheme = tv4.validate(response, scheme, true, true);",
+											"    ",
+											"    pm.expect(isValidScheme).to.be.true;",
+											"});",
+											"",
+											"pm.test(\"checkStatusResponse\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    var status = jsonData.status;",
+											"    pm.expect(status).to.eql(\"error\");",
+											"});",
+											"",
+											"pm.test(\"checkCodeResponse\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    var code = jsonData.code;",
+											"    pm.expect(code).to.eql(\"001\");",
+											"});",
+											"",
+											"pm.test(\"checkMessageResponse\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    var message = jsonData.message;",
+											"    pm.expect(message).to.eql(\"Номер или e-mail введен в неверном формате\");",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "project",
+											"value": "{{project}}",
+											"type": "text"
+										},
+										{
+											"key": "login",
+											"value": "{{invalidPhone}}",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "https://{{host}}/getInfoAuth.json",
+									"protocol": "https",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"getInfoAuth.json"
+									]
+								},
+								"description": "Пытаемся передать невалидный (7 символов) номер телефона"
+							},
+							"response": []
+						},
+						{
+							"name": "checkInvalidPasswordByPhone",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "51535864-eee6-4c5e-b9e9-c23e1f6342fa",
+										"exec": [
+											"var ",
+											"    scheme ={",
+											"  \"definitions\": {},",
+											"  \"type\": \"object\",",
+											"  \"required\": [",
+											"    \"status\",",
+											"    \"code\",",
+											"    \"message\"",
+											"  ],",
+											"  \"properties\": {",
+											"    \"status\": {",
+											"      \"$id\": \"#/properties/status\",",
+											"      \"type\": \"string\",",
+											"      \"default\": \"error\",",
+											"    },",
+											"    \"code\": {",
+											"      \"$id\": \"#/properties/code\",",
+											"      \"type\": \"string\",",
+											"      \"default\": \"001\",",
+											"    },",
+											"    \"message\": {",
+											"      \"$id\": \"#/properties/message\",",
+											"      \"type\": \"string\",",
+											"      \"default\": \"Номер или e-mail введен в неверном формате\",",
+											"    }",
+											"  }",
+											"};",
+											"    ",
+											"    response = pm.response.json();",
+											"",
+											"pm.test('Schema is valid', function() {",
+											"    var isValidScheme = tv4.validate(response, scheme, true, true);",
+											"    ",
+											"    pm.expect(isValidScheme).to.be.true;",
+											"});",
+											"",
+											"pm.test(\"checkStatusResponse\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    var status = jsonData.status;",
+											"    pm.expect(status).to.eql(\"error\");",
+											"});",
+											"",
+											"pm.test(\"checkCodeResponse\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    var code = jsonData.code;",
+											"    pm.expect(code).to.eql(\"001\");",
+											"});",
+											"",
+											"pm.test(\"checkMessageResponse\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    var message = jsonData.message;",
+											"    pm.expect(message).to.eql(\"Неверно указан логин или пароль, попробуйте еще раз.\");",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "0763fac1-d5a6-4a53-9263-7a56d7ceb167",
+										"exec": [
+											"function randomString(length, chars) {",
+											"    var result = '';",
+											"    for (var i = length; i > 0; --i) result += chars[Math.floor(Math.random() * chars.length)];",
+											"    return result;",
+											"}",
+											"var invalidPassword = randomString(7, '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ');",
+											"",
+											"try {",
+											"    console.log(invalidPassword);",
+											"    pm.environment.set(\"invalidPassword\", invalidPassword);",
+											"} catch(e) {",
+											"    // выводим исключение в консоль",
+											"    console.log(e);",
+											"}",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "project",
+											"value": "{{project}}",
+											"type": "text"
+										},
+										{
+											"key": "login",
+											"value": "{{phoneNumber}}",
+											"type": "text"
+										},
+										{
+											"key": "password",
+											"value": "{{invalidPassword}}",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "https://{{host}}/login.json",
+									"protocol": "https",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"login.json"
+									]
+								},
+								"description": "Пытаемся авторизоваться существующим юзером с номером телефона под неверным паролем"
+							},
+							"response": []
+						},
+						{
+							"name": "checkInvalidEmail",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "e20beeb9-e426-4b0c-bbbd-ddd84b86be10",
+										"exec": [
+											"function randomString(length, chars) {",
+											"    var result = '';",
+											"    for (var i = length; i > 0; --i) result += chars[Math.floor(Math.random() * chars.length)];",
+											"    return result;",
+											"}",
+											"var invalidEmail = randomString(5, '0123456789abcdefghijklmnopqrstuvwxyz') + \"@newmantest\";",
+											"",
+											"try {",
+											"    console.log(invalidEmail);",
+											"    pm.environment.set(\"invalidEmail\", invalidEmail);",
+											"} catch(e) {",
+											"    // выводим исключение в консоль",
+											"    console.log(e);",
+											"}",
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"id": "8466fd53-efef-4695-850f-72a8ad077f81",
+										"exec": [
+											"var ",
+											"    scheme ={",
+											"  \"definitions\": {},",
+											"  \"type\": \"object\",",
+											"  \"required\": [",
+											"    \"status\",",
+											"    \"code\",",
+											"    \"message\"",
+											"  ],",
+											"  \"properties\": {",
+											"    \"status\": {",
+											"      \"$id\": \"#/properties/status\",",
+											"      \"type\": \"string\",",
+											"      \"default\": \"error\",",
+											"    },",
+											"    \"code\": {",
+											"      \"$id\": \"#/properties/code\",",
+											"      \"type\": \"string\",",
+											"      \"default\": \"001\",",
+											"    },",
+											"    \"message\": {",
+											"      \"$id\": \"#/properties/message\",",
+											"      \"type\": \"string\",",
+											"      \"default\": \"Номер или e-mail введен в неверном формате\",",
+											"    }",
+											"  }",
+											"};",
+											"    ",
+											"    response = pm.response.json();",
+											"",
+											"pm.test('Schema is valid', function() {",
+											"    var isValidScheme = tv4.validate(response, scheme, true, true);",
+											"    ",
+											"    pm.expect(isValidScheme).to.be.true;",
+											"});",
+											"",
+											"pm.test(\"checkStatusResponse\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    var status = jsonData.status;",
+											"    pm.expect(status).to.eql(\"error\");",
+											"});",
+											"",
+											"pm.test(\"checkCodeResponse\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    var code = jsonData.code;",
+											"    pm.expect(code).to.eql(\"001\");",
+											"});",
+											"",
+											"pm.test(\"checkMessageResponse\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    var message = jsonData.message;",
+											"    pm.expect(message).to.eql(\"Номер или e-mail введен в неверном формате\");",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "project",
+											"value": "{{project}}",
+											"type": "text"
+										},
+										{
+											"key": "login",
+											"value": "{{invalidEmail}}",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "https://{{host}}/getInfoAuth.json",
+									"protocol": "https",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"getInfoAuth.json"
+									]
+								},
+								"description": "Пытаемся передать невалидный мэйл"
+							},
+							"response": []
+						},
+						{
+							"name": "checkInvalidPasswordByEmail",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "5ab54655-5911-4fba-b7c2-340b0315a461",
+										"exec": [
+											"function randomString(length, chars) {",
+											"    var result = '';",
+											"    for (var i = length; i > 0; --i) result += chars[Math.floor(Math.random() * chars.length)];",
+											"    return result;",
+											"}",
+											"var invalidPassword = randomString(7, '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ');",
+											"",
+											"try {",
+											"    console.log(invalidPassword);",
+											"    pm.environment.set(\"invalidPassword\", invalidPassword);",
+											"} catch(e) {",
+											"    // выводим исключение в консоль",
+											"    console.log(e);",
+											"}",
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"id": "55d51391-6530-40ec-b732-c572d7fbb6b7",
+										"exec": [
+											"var ",
+											"    scheme ={",
+											"  \"definitions\": {},",
+											"  \"type\": \"object\",",
+											"  \"required\": [",
+											"    \"status\",",
+											"    \"code\",",
+											"    \"message\"",
+											"  ],",
+											"  \"properties\": {",
+											"    \"status\": {",
+											"      \"$id\": \"#/properties/status\",",
+											"      \"type\": \"string\",",
+											"      \"default\": \"error\",",
+											"    },",
+											"    \"code\": {",
+											"      \"$id\": \"#/properties/code\",",
+											"      \"type\": \"string\",",
+											"      \"default\": \"001\",",
+											"    },",
+											"    \"message\": {",
+											"      \"$id\": \"#/properties/message\",",
+											"      \"type\": \"string\",",
+											"      \"default\": \"Номер или e-mail введен в неверном формате\",",
+											"    }",
+											"  }",
+											"};",
+											"    ",
+											"    response = pm.response.json();",
+											"",
+											"pm.test('Schema is valid', function() {",
+											"    var isValidScheme = tv4.validate(response, scheme, true, true);",
+											"    ",
+											"    pm.expect(isValidScheme).to.be.true;",
+											"});",
+											"",
+											"pm.test(\"checkStatusResponse\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    var status = jsonData.status;",
+											"    pm.expect(status).to.eql(\"error\");",
+											"});",
+											"",
+											"pm.test(\"checkCodeResponse\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    var code = jsonData.code;",
+											"    pm.expect(code).to.eql(\"001\");",
+											"});",
+											"",
+											"pm.test(\"checkMessageResponse\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    var message = jsonData.message;",
+											"    pm.expect(message).to.eql(\"Неверно указан логин или пароль, попробуйте еще раз.\");",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "project",
+											"value": "{{project}}",
+											"type": "text"
+										},
+										{
+											"key": "login",
+											"value": "{{email}}",
+											"type": "text"
+										},
+										{
+											"key": "password",
+											"value": "{{invalidPassword}}",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "https://{{host}}/login.json",
+									"protocol": "https",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"login.json"
+									]
+								},
+								"description": "Пытаемся авторизоваться существующим юзером с мэйлом под неверным паролем"
+							},
+							"response": []
+						},
+						{
+							"name": "checkPhoneLoginByInvalidSmsCode",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "93316986-ce0d-46f4-9baa-3889347878d4",
+										"exec": [
+											"var InvalidSmsCode = \"2222\";",
+											"",
+											"try {",
+											"    console.log(InvalidSmsCode);",
+											"    pm.environment.set(\"InvalidSmsCode\", InvalidSmsCode);",
+											"} catch(e) {",
+											"    // выводим исключение в консоль",
+											"    console.log(e);",
+											"}",
+											"",
+											"var project = \"kolesa\";",
+											"",
+											"try {",
+											"    console.log(project);",
+											"    pm.environment.set(\"project\", project);",
+											"} catch(e) {",
+											"    // выводим исключение в консоль",
+											"    console.log(e);",
+											"}",
+											"",
+											"var number = \"7701\" + Math.floor(Math.random() * 10000000);",
+											"",
+											"try {",
+											"    console.log(number);",
+											"    pm.environment.set(\"phoneNumber\", number);",
+											"} catch(e) {",
+											"    // выводим исключение в консоль",
+											"    console.log(e);",
+											"}",
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"id": "2ee432e3-fbde-4e7a-bdb3-40e8c27f93a3",
+										"exec": [
+											"var ",
+											"    scheme = {",
+											"        \"type\":        \"object\",",
+											"        \"properties\": {",
+											"            \"code\": {",
+											"                \"type\":\"string\"",
+											"            },",
+											"            \"message\": {",
+											"                \"type\":\"string\"",
+											"            },",
+											"            \"status\": {",
+											"                \"type\":\"string\"",
+											"            }    ",
+											"       }",
+											"    }",
+											"    ",
+											"    response = pm.response.json();",
+											"",
+											"pm.test('Schema is valid', function() {",
+											"    var isValidScheme = tv4.validate(response, scheme, true, true);",
+											"    ",
+											"    pm.expect(isValidScheme).to.be.true;",
+											"});",
+											"",
+											"pm.test(\"checkTypeResponse\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    var code = jsonData.code;",
+											"    pm.expect(code).to.eql(\"001\");",
+											"});",
+											"",
+											"pm.test(\"checkMessageResponse\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    var message = jsonData.message;",
+											"    pm.expect(message).to.eql(\"Неверный код подтверждения\");",
+											"});",
+											"",
+											"pm.test(\"checkStatusResponse\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    var status = jsonData.status;",
+											"    pm.expect(status).to.eql(\"error\");",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "project",
+											"value": "{{project}}",
+											"type": "text"
+										},
+										{
+											"key": "login",
+											"value": "{{phoneNumber}}",
+											"type": "text"
+										},
+										{
+											"key": "code",
+											"value": "{{InvalidSmsCode}}",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "https://{{host}}/login.json",
+									"protocol": "https",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"login.json"
+									]
+								},
+								"description": "Пытаемся авторизоваться под юзером с номером телефона и неверным смс-кодом"
+							},
+							"response": []
+						},
+						{
+							"name": "checkMailLoginByInvalidSmsCode",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "926dc279-dcf0-4997-ad6e-28f12def2913",
+										"exec": [
+											"var InvalidSmsCode = \"2222\";",
+											"",
+											"try {",
+											"    console.log(InvalidSmsCode);",
+											"    pm.environment.set(\"InvalidSmsCode\", InvalidSmsCode);",
+											"} catch(e) {",
+											"    // выводим исключение в консоль",
+											"    console.log(e);",
+											"}",
+											"",
+											"var project = \"kolesa\";",
+											"",
+											"try {",
+											"    console.log(project);",
+											"    pm.environment.set(\"project\", project);",
+											"} catch(e) {",
+											"    // выводим исключение в консоль",
+											"    console.log(e);",
+											"}",
+											"",
+											"function randomString(length, chars) {",
+											"    var result = '';",
+											"    for (var i = length; i > 0; --i) result += chars[Math.floor(Math.random() * chars.length)];",
+											"    return result;",
+											"}",
+											"var email = randomString(10, '0123456789abcdefghijklmnopqrstuvwxyz') + \"@newmantest.org\";",
+											"",
+											"try {",
+											"    console.log(email);",
+											"    pm.environment.set(\"email\", email);",
+											"} catch(e) {",
+											"    // выводим исключение в консоль",
+											"    console.log(e);",
+											"}"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"id": "4097c031-8c36-4e8a-959d-36b6def9bad1",
+										"exec": [
+											"var ",
+											"    scheme = {",
+											"        \"type\":        \"object\",",
+											"        \"properties\": {",
+											"            \"code\": {",
+											"                \"type\":\"string\"",
+											"            },",
+											"            \"message\": {",
+											"                \"type\":\"string\"",
+											"            },",
+											"            \"status\": {",
+											"                \"type\":\"string\"",
+											"            }    ",
+											"       }",
+											"    }",
+											"    ",
+											"    response = pm.response.json();",
+											"",
+											"pm.test('Schema is valid', function() {",
+											"    var isValidScheme = tv4.validate(response, scheme, true, true);",
+											"    ",
+											"    pm.expect(isValidScheme).to.be.true;",
+											"});",
+											"",
+											"pm.test(\"checkTypeResponse\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    var code = jsonData.code;",
+											"    pm.expect(code).to.eql(\"001\");",
+											"});",
+											"",
+											"pm.test(\"checkMessageResponse\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    var message = jsonData.message;",
+											"    pm.expect(message).to.eql(\"Неверно указан код.\");",
+											"});",
+											"",
+											"pm.test(\"checkStatusResponse\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    var status = jsonData.status;",
+											"    pm.expect(status).to.eql(\"error\");",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "project",
+											"value": "{{project}}",
+											"type": "text"
+										},
+										{
+											"key": "login",
+											"value": "{{email}}",
+											"type": "text"
+										},
+										{
+											"key": "code",
+											"value": "{{InvalidSmsCode}}",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "https://{{host}}/login.json",
+									"protocol": "https",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"login.json"
+									]
+								},
+								"description": "Пытаемся авторизоваться под юзером с мэйлом и неверным смс-кодом"
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "78e58fc2-38b6-469b-bc3c-963bf8acecc0",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "66ff15fc-5c58-4044-bbf8-5681e00e3b33",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
